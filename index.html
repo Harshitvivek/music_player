@@ -30,6 +30,10 @@
         #playlist li:hover {
             background-color: #ccc;
         }
+
+        #song-info {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -37,6 +41,7 @@
         <audio id="audio" controls></audio>
         <button onclick="playPrevious()">Previous</button>
         <ul id="playlist"></ul>
+        <div id="song-info"></div>
     </div>
 
     <script>
@@ -74,6 +79,7 @@
 
         const audio = document.getElementById('audio');
         const playlist = document.getElementById('playlist');
+        const songInfo = document.getElementById('song-info');
         const songStack = new Stack();
 
         songs.forEach((song, index) => {
@@ -92,6 +98,11 @@
             audio.src = selectedSong.source;
             audio.play();
             songStack.push(index);
+            updateSongInfo(selectedSong.title);
+        }
+
+        function updateSongInfo(songTitle) {
+            songInfo.textContent = `Now Playing: ${songTitle}`;
         }
 
         function playPrevious() {
