@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player with Stack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #player {
+            width: 300px;
+            margin: 50px auto;
+        }
+
+        #playlist {
+            list-style: none;
+            padding: 0;
+        }
+
+        #playlist li {
+            cursor: pointer;
+            margin: 5px;
+            padding: 8px;
+            background-color: #f0f0f0;
+        }
+
+        #playlist li:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="player">
+        <audio id="audio" controls></audio>
+        <button onclick="playPrevious()">Previous</button>
+        <ul id="playlist"></ul>
+    </div>
+
+    <script>
+        class Stack {
+            constructor() {
+                this.items = [];
+            }
+
+            push(item) {
+                this.items.push(item);
+            }
+
+            pop() {
+                return this.items.pop();
+            }
+
+            peek() {
+                return this.items[this.items.length - 1];
+            }
+
+            isEmpty() {
+                return this.items.length === 0;
+            }
+
+            size() {
+                return this.items.length;
+            }
+        }
+
+        const songs = [
+            { title: 'Song 1', source: 'RamAyenge.mp3' },
+            { title: 'Song 2', source: 'RamSiyaRam.mp3' },
+            { title: 'Song 3', source: 'ShivTandav.mp3' },
+        ];
+
+        const audio = document.getElementById('audio');
+        const playlist = document.getElementById('playlist');
+        const songStack = new Stack();
+
+        songs.forEach((song, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = song.title;
+
+            listItem.addEventListener('click', () => {
+                playSong(index);
+            });
+
+            playlist.appendChild(listItem);
+        });
+
+        function playSong(index) {
+            const selectedSong = songs[index];
+            audio.src = selectedSong.source;
+            audio.play();
+            songStack.push(index);
+        }
+
+        function playPrevious() {
+            if (!songStack.isEmpty()) {
+                songStack.pop(); // Remove the current song
+                const previousSongIndex = songStack.pop();
+                if (previousSongIndex !== undefined) {
+                    playSong(previousSongIndex);
+                }
+            }
+        }
+
+        function playNext() {
+            if (!songStack.isEmpty()) {
+                const nextSongIndex = songStack.pop();
+                if (nextSongIndex !== undefined) {
+                    playSong(nextSongIndex);
+                }
+            }
+        }
+
+        audio.addEventListener('ended', () => {
+            // Play the next song in the stack when the current song ends
+            if (!songStack.isEmpty()) {
+                const nextSongIndex = songStack.pop();
+                playSong(nextSongIndex);
+            }
+        });
+    </script>
+</body>
+</html>
